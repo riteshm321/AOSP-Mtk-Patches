@@ -1,2 +1,3 @@
-# AospExtendedMTKPatches
-Contains Patches to be applied on AospExtended Sources inorder to build for MTK devices
+# AospMTKPatches
+AOSP Mtk Patches for MTK Roms
+Don't forget to clone it to device/xxx/xxx/patches
