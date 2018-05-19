@@ -1,0 +1,26 @@
+commit 77542e0159f07aef5d97cc3d4dbcf6f23ecc84e6
+Author: dmurimi14 <d.murimi14@gmail.com>
+Date:   Mon Apr 2 14:33:42 2018 +0300
+
+    MTK Patches
+    
+    Change-Id: I27374742e1c7eca6967f846efd5719fd0d6d24e0
+
+diff --git a/jni/fmr/libfm_jni.cpp b/jni/fmr/libfm_jni.cpp
+index a906887..3d15868 100644
+--- a/jni/fmr/libfm_jni.cpp
++++ b/jni/fmr/libfm_jni.cpp
+@@ -51,7 +51,7 @@ jboolean powerUp(JNIEnv *env, jobject thiz, jfloat freq)
+     int tmp_freq;
+ 
+     LOGI("%s, [freq=%d]\n", __func__, (int)freq);
+-    tmp_freq = (int)(freq * 10);        //Eg, 87.5 * 10 --> 875
++    tmp_freq = (int)(freq * 100);        //Eg, 87.5 * 10 --> 875
+     ret = FMR_pwr_up(g_idx, tmp_freq);
+ 
+     LOGD("%s, [ret=%d]\n", __func__, ret);
+@@ -435,4 +435,3 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
+ fail:
+     return result;
+ }
+-
