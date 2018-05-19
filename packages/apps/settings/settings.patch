@@ -1,0 +1,120 @@
+commit e00e00183ff9c5d5a7cacc3229699c982a7516f2
+Author: dmurimi14 <d.murimi14@gmail.com>
+Date:   Mon Apr 2 14:26:24 2018 +0300
+
+    MTK Patches
+    
+    Change-Id: I3668f953c9ffffbac21dd3f62b0a63259cd24ca5
+
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index 8de35ee..c453a17 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -33,6 +33,8 @@
+     <!-- Device Info --> <skip />
+     <!-- Device Info screen. Used for a status item's value when the proper value is not known -->
+     <string name="device_info_default">Unknown</string>
++    <!-- Device Info screen. Used for a status item's value when the proper value is not known -->
++    <string name="author_info_default">Nasrellah Irhmar (NasreIrma)</string>
+     <!-- [CHAR LIMIT=NONE] Device Info screen. Countdown for user taps to enable development settings -->
+     <plurals name="show_dev_countdown">
+         <item quantity="one">You are now <xliff:g id="step_count">%1$d</xliff:g> steps away from enabling development settings.</item>
+@@ -2373,6 +2375,8 @@
+     <string name="firmware_version">Android version</string>
+     <!-- About phone screen, status item label  [CHAR LIMIT=60] -->
+     <string name="security_patch">Security patch level</string>
++    <!-- About phone screen, status item label  [CHAR LIMIT=60] -->
++    <string name="author_info">Build author</string>
+     <!-- About phone screen, status item label  [CHAR LIMIT=40] -->
+     <string name="model_info">Model</string>
+     <!-- About phone screen, fcc equipment id label  [CHAR LIMIT=40] -->
+diff --git a/res/xml/device_info_settings.xml b/res/xml/device_info_settings.xml
+index 8a7a8b3..114e019 100644
+--- a/res/xml/device_info_settings.xml
++++ b/res/xml/device_info_settings.xml
+@@ -129,6 +129,14 @@
+                         android:data="https://source.android.com/security/bulletin/" />
+         </PreferenceScreen>
+ 
++        <!-- Author Info -->
++        <PreferenceScreen android:key="author_info"
++                android:title="@string/author_info"
++                android:summary="@string/author_info_default">
++                <intent android:action="android.intent.action.VIEW"
++                        android:data="https://www.facebook.com/nasre.irma" />
++        </PreferenceScreen>
++
+         <!-- Device FCC equipment id -->
+         <com.android.settings.DividerPreference
+                 android:key="fcc_equipment_id"
+diff --git a/src/com/android/settings/DeviceInfoSettings.java b/src/com/android/settings/DeviceInfoSettings.java
+index 3387e32..cdb5da8 100644
+--- a/src/com/android/settings/DeviceInfoSettings.java
++++ b/src/com/android/settings/DeviceInfoSettings.java
+@@ -78,6 +78,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+     private static final String KEY_SELINUX_STATUS = "selinux_status";
+     private static final String KEY_BASEBAND_VERSION = "baseband_version";
+     private static final String KEY_FIRMWARE_VERSION = "firmware_version";
++    private static final String KEY_AUTHOR_INFO = "author_info";
+     private static final String KEY_SECURITY_PATCH = "security_patch";
+     private static final String KEY_EQUIPMENT_ID = "fcc_equipment_id";
+     private static final String PROPERTY_EQUIPMENT_ID = "ro.ril.fccid";
+@@ -181,6 +182,8 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+         findPreference(KEY_EXTENDED_VERSION).setEnabled(true);
+         setValueSummary(KEY_MOD_BUILD_DATE, "ro.build.date");
+ 
++        String author_info = getResources().getString(R.string.author_info_default);
++        setStringSummary(KEY_AUTHOR_INFO, author_info);
+ 
+         if (!SELinux.isSELinuxEnabled()) {
+             String status = getResources().getString(R.string.selinux_status_disabled);
+@@ -345,6 +348,14 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+         } else if (preference.getKey().equals(KEY_DEVICE_FEEDBACK)) {
+             sendFeedback();
+ 
++        } else if (preference.getKey().equals(KEY_AUTHOR_INFO)) {
++            if (getPackageManager().queryIntentActivities(preference.getIntent(), 0).isEmpty()) {
++                // Don't send out the intent to stop crash
++                Log.w(LOG_TAG, "Stop click action on " + KEY_AUTHOR_INFO + ": "
++                        + "queryIntentActivities() returns empty" );
++                return true;
++            }
++
+         } else if (preference.getKey().equals(KEY_EXTENDED_VERSION)) {
+             System.arraycopy(mHits, 1, mHits, 0, mHits.length-1);
+             mHits[mHits.length-1] = SystemClock.uptimeMillis();
+@@ -578,7 +589,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+      private String getMemInfo() {
+          String result = null;
+          BufferedReader reader = null;
+- 
++
+          try {
+              /* /proc/meminfo entries follow this format:
+               * MemTotal:         362096 kB
+@@ -594,13 +605,13 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+                  }
+              }
+          } catch (IOException e) {}
+- 
++
+          return result;
+      }
+- 
++
+      private String getCPUInfo() {
+          String result = null;
+- 
++
+          try {
+              /* The expected /proc/cpuinfo output is as follows:
+               * Processor	: ARMv7 Processor rev 2 (v7l)
+@@ -611,7 +622,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+                  result = firstLine.split(":")[1].trim();
+              }
+          } catch (IOException e) {}
+- 
++
+          return result;
+      }
+ }
