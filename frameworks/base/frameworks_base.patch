@@ -1,0 +1,770 @@
+commit 88ef30991878757d740e6862f099a3ea29d2960a
+Author: dmurimi14 <d.murimi14@gmail.com>
+Date:   Mon Apr 2 14:30:08 2018 +0300
+
+    MTK Patches
+    
+    Change-Id: I74c1665d3da28867b51ed88c1c559c7480341a70
+
+diff --git a/api/current.txt b/api/current.txt
+index 8655d899..01f9af66 100644
+--- a/api/current.txt
++++ b/api/current.txt
+@@ -112,6 +112,7 @@ package android {
+     field public static final java.lang.String REQUEST_IGNORE_BATTERY_OPTIMIZATIONS = "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS";
+     field public static final java.lang.String REQUEST_INSTALL_PACKAGES = "android.permission.REQUEST_INSTALL_PACKAGES";
+     field public static final deprecated java.lang.String RESTART_PACKAGES = "android.permission.RESTART_PACKAGES";
++    field public static final java.lang.String RESTART_UI = "android.permission.RESTART_UI";
+     field public static final java.lang.String SEND_RESPOND_VIA_MESSAGE = "android.permission.SEND_RESPOND_VIA_MESSAGE";
+     field public static final java.lang.String SEND_SMS = "android.permission.SEND_SMS";
+     field public static final java.lang.String SET_ALARM = "com.android.alarm.permission.SET_ALARM";
+@@ -9668,6 +9669,7 @@ package android.content.pm {
+     method public void setAppIcon(android.graphics.Bitmap);
+     method public void setAppLabel(java.lang.CharSequence);
+     method public void setAppPackageName(java.lang.String);
++    method public void setInstallFlagsQuick();
+     method public void setInstallLocation(int);
+     method public void setOriginatingUid(int);
+     method public void setOriginatingUri(android.net.Uri);
+@@ -13186,6 +13188,11 @@ package android.graphics.drawable {
+     method public void addState(int[], android.graphics.drawable.Drawable);
+   }
+ 
++  public class StopMotionVectorDrawable extends android.graphics.drawable.DrawableWrapper {
++    ctor public StopMotionVectorDrawable(android.graphics.drawable.Drawable);
++    method public void setCurrentFraction(float);
++  }
++
+   public class TransitionDrawable extends android.graphics.drawable.LayerDrawable implements android.graphics.drawable.Drawable.Callback {
+     ctor public TransitionDrawable(android.graphics.drawable.Drawable[]);
+     method public boolean isCrossFadeEnabled();
+@@ -19721,6 +19728,7 @@ package android.media {
+     method public void setRingerMode(int);
+     method public deprecated void setRouting(int, int, int);
+     method public void setSpeakerphoneOn(boolean);
++    method public void setStreamMaxVolume(int, int);
+     method public deprecated void setStreamMute(int, boolean);
+     method public deprecated void setStreamSolo(int, boolean);
+     method public void setStreamVolume(int, int, int);
+@@ -21718,6 +21726,7 @@ package android.media {
+     method public boolean isPlaying();
+     method public void play();
+     method public void setAudioAttributes(android.media.AudioAttributes) throws java.lang.IllegalArgumentException;
++    method public void setCustomAudioAttributes();
+     method public deprecated void setStreamType(int);
+     method public void stop();
+   }
+@@ -22033,12 +22042,15 @@ package android.media.audiofx {
+ 
+   public class BassBoost extends android.media.audiofx.AudioEffect {
+     ctor public BassBoost(int, int) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.RuntimeException, java.lang.UnsupportedOperationException;
++    method public short getCenterFrequency();
+     method public android.media.audiofx.BassBoost.Settings getProperties() throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public short getRoundedStrength() throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public boolean getStrengthSupported();
++    method public void setCenterFrequency(short) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public void setParameterListener(android.media.audiofx.BassBoost.OnParameterChangeListener);
+     method public void setProperties(android.media.audiofx.BassBoost.Settings) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public void setStrength(short) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
++    field public static final int PARAM_CENTER_FREQUENCY = 2; // 0x2
+     field public static final int PARAM_STRENGTH = 1; // 0x1
+     field public static final int PARAM_STRENGTH_SUPPORTED = 0; // 0x0
+   }
+@@ -28308,6 +28320,7 @@ package android.os {
+     field public static final java.lang.String BRAND;
+     field public static final deprecated java.lang.String CPU_ABI;
+     field public static final deprecated java.lang.String CPU_ABI2;
++    field public static final java.lang.String DATE;
+     field public static final java.lang.String DEVICE;
+     field public static final java.lang.String DISPLAY;
+     field public static final java.lang.String FINGERPRINT;
+@@ -29119,6 +29132,7 @@ package android.os {
+   }
+ 
+   public final class PowerManager {
++    method public java.lang.String getSeenWakeLocks();
+     method public boolean isDeviceIdleMode();
+     method public boolean isIgnoringBatteryOptimizations(java.lang.String);
+     method public boolean isInteractive();
+@@ -32483,6 +32497,7 @@ package android.provider {
+     field public static final java.lang.String RADIO_NFC = "nfc";
+     field public static final java.lang.String RADIO_WIFI = "wifi";
+     field public static final deprecated java.lang.String SHOW_PROCESSES = "show_processes";
++    field public static final java.lang.String SINGLE_HAND_MODE = "single_hand_mode";
+     field public static final java.lang.String STAY_ON_WHILE_PLUGGED_IN = "stay_on_while_plugged_in";
+     field public static final java.lang.String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
+     field public static final java.lang.String USB_MASS_STORAGE_ENABLED = "usb_mass_storage_enabled";
+@@ -32543,6 +32558,7 @@ package android.provider {
+     field public static final deprecated java.lang.String DEVICE_PROVISIONED = "device_provisioned";
+     field public static final java.lang.String ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+     field public static final java.lang.String ENABLED_INPUT_METHODS = "enabled_input_methods";
++    field public static final java.lang.String FLING_PULSE_LAVALAMP_COLOR_TO = "fling_lavalamp_color_to";
+     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
+     field public static final java.lang.String INPUT_METHOD_SELECTOR_VISIBILITY = "input_method_selector_visibility";
+     field public static final java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
+@@ -32563,6 +32579,7 @@ package android.provider {
+     field public static final java.lang.String SELECTED_INPUT_METHOD_SUBTYPE = "selected_input_method_subtype";
+     field public static final java.lang.String SETTINGS_CLASSNAME = "settings_classname";
+     field public static final java.lang.String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
++    field public static final java.lang.String SMARTBAR_CUSTOM_ICON_SIZE = "smartbar_custom_icon_size";
+     field public static final java.lang.String TOUCH_EXPLORATION_ENABLED = "touch_exploration_enabled";
+     field public static final deprecated java.lang.String TTS_DEFAULT_COUNTRY = "tts_default_country";
+     field public static final deprecated java.lang.String TTS_DEFAULT_LANG = "tts_default_lang";
+@@ -32624,12 +32641,18 @@ package android.provider {
+     field public static final java.lang.String ALARM_ALERT = "alarm_alert";
+     field public static final deprecated java.lang.String ALWAYS_FINISH_ACTIVITIES = "always_finish_activities";
+     field public static final deprecated java.lang.String ANDROID_ID = "android_id";
++    field public static final java.lang.String ANIMATION_CONTROLS_DURATION = "animation_controls_duration";
+     field public static final deprecated java.lang.String ANIMATOR_DURATION_SCALE = "animator_duration_scale";
+     field public static final deprecated java.lang.String AUTO_TIME = "auto_time";
+     field public static final deprecated java.lang.String AUTO_TIME_ZONE = "auto_time_zone";
+     field public static final java.lang.String BLUETOOTH_DISCOVERABILITY = "bluetooth_discoverability";
+     field public static final java.lang.String BLUETOOTH_DISCOVERABILITY_TIMEOUT = "bluetooth_discoverability_timeout";
+     field public static final deprecated java.lang.String BLUETOOTH_ON = "bluetooth_on";
++    field public static final java.lang.String BLUR_DARK_COLOR_PREFERENCE_KEY = "blur_dark_color_pref";
++    field public static final java.lang.String BLUR_LIGHT_COLOR_PREFERENCE_KEY = "blur_light_color_pref";
++    field public static final java.lang.String BLUR_MIXED_COLOR_PREFERENCE_KEY = "blur_mixed_color_pref";
++    field public static final java.lang.String BLUR_RADIUS_PREFERENCE_KEY = "blurred_expanded_panel_radius_pref";
++    field public static final java.lang.String BLUR_SCALE_PREFERENCE_KEY = "blurred_expanded_panel_scale_pref";
+     field public static final android.net.Uri CONTENT_URI;
+     field public static final deprecated java.lang.String DATA_ROAMING = "data_roaming";
+     field public static final java.lang.String DATE_FORMAT = "date_format";
+@@ -32646,6 +32669,7 @@ package android.provider {
+     field public static final java.lang.String HAPTIC_FEEDBACK_ENABLED = "haptic_feedback_enabled";
+     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
+     field public static final deprecated java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
++    field public static final deprecated java.lang.String KEY_SMS_BREATH = "sms_breath";
+     field public static final deprecated java.lang.String LOCATION_PROVIDERS_ALLOWED = "location_providers_allowed";
+     field public static final deprecated java.lang.String LOCK_PATTERN_ENABLED = "lock_pattern_autolock";
+     field public static final deprecated java.lang.String LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
+@@ -32664,6 +32688,9 @@ package android.provider {
+     field public static final deprecated java.lang.String RADIO_CELL = "cell";
+     field public static final deprecated java.lang.String RADIO_NFC = "nfc";
+     field public static final deprecated java.lang.String RADIO_WIFI = "wifi";
++    field public static final java.lang.String RECENT_APPS_ENABLED_PREFERENCE_KEY = "blurred_recent_app_enabled_pref";
++    field public static final java.lang.String RECENT_APPS_RADIUS_PREFERENCE_KEY = "blurred_recent_app_radius_pref";
++    field public static final java.lang.String RECENT_APPS_SCALE_PREFERENCE_KEY = "blurred_recent_app_scale_pref";
+     field public static final java.lang.String RINGTONE = "ringtone";
+     field public static final java.lang.String SCREEN_BRIGHTNESS = "screen_brightness";
+     field public static final java.lang.String SCREEN_BRIGHTNESS_MODE = "screen_brightness_mode";
+@@ -32683,6 +32710,10 @@ package android.provider {
+     field public static final java.lang.String TEXT_SHOW_PASSWORD = "show_password";
+     field public static final java.lang.String TIME_12_24 = "time_12_24";
+     field public static final deprecated java.lang.String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
++    field public static final java.lang.String TRANSLUCENT_NOTIFICATIONS_PRECENTAGE_PREFERENCE_KEY = "translucent_notifications_percentage_pref";
++    field public static final java.lang.String TRANSLUCENT_NOTIFICATIONS_PREFERENCE_KEY = "translucent_notifications_pref";
++    field public static final java.lang.String TRANSLUCENT_QUICK_SETTINGS_PRECENTAGE_PREFERENCE_KEY = "translucent_quick_settings_percentage_pref";
++    field public static final java.lang.String TRANSLUCENT_QUICK_SETTINGS_PREFERENCE_KEY = "translucent_quick_settings_pref";
+     field public static final deprecated java.lang.String USB_MASS_STORAGE_ENABLED = "usb_mass_storage_enabled";
+     field public static final java.lang.String USER_ROTATION = "user_rotation";
+     field public static final deprecated java.lang.String USE_GOOGLE_MAIL = "use_google_mail";
+@@ -43101,6 +43132,7 @@ package android.view {
+     method public static deprecated int getWindowTouchSlop();
+     method public static long getZoomControlsTimeout();
+     method public boolean hasPermanentMenuKey();
++    method public static boolean isNumeric(java.lang.String);
+   }
+ 
+   public class ViewDebug {
+@@ -46900,6 +46932,7 @@ package android.widget {
+     ctor public ImageSwitcher(android.content.Context);
+     ctor public ImageSwitcher(android.content.Context, android.util.AttributeSet);
+     method public void setImageDrawable(android.graphics.drawable.Drawable);
++    method public void setImageDrawableTint(android.graphics.drawable.Drawable, int, boolean);
+     method public void setImageResource(int);
+     method public void setImageURI(android.net.Uri);
+   }
+@@ -48052,6 +48085,7 @@ package android.widget {
+     ctor public TextSwitcher(android.content.Context, android.util.AttributeSet);
+     method public void setCurrentText(java.lang.CharSequence);
+     method public void setText(java.lang.CharSequence);
++    method public void setTextColor(int);
+   }
+ 
+   public class TextView extends android.view.View implements android.view.ViewTreeObserver.OnPreDrawListener {
+diff --git a/api/system-current.txt b/api/system-current.txt
+index 73c96117..c1eb779d 100644
+--- a/api/system-current.txt
++++ b/api/system-current.txt
+@@ -198,6 +198,7 @@ package android {
+     field public static final java.lang.String REQUEST_IGNORE_BATTERY_OPTIMIZATIONS = "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS";
+     field public static final java.lang.String REQUEST_INSTALL_PACKAGES = "android.permission.REQUEST_INSTALL_PACKAGES";
+     field public static final deprecated java.lang.String RESTART_PACKAGES = "android.permission.RESTART_PACKAGES";
++    field public static final java.lang.String RESTART_UI = "android.permission.RESTART_UI";
+     field public static final java.lang.String RETRIEVE_WINDOW_CONTENT = "android.permission.RETRIEVE_WINDOW_CONTENT";
+     field public static final java.lang.String REVOKE_RUNTIME_PERMISSIONS = "android.permission.REVOKE_RUNTIME_PERMISSIONS";
+     field public static final java.lang.String SCORE_NETWORKS = "android.permission.SCORE_NETWORKS";
+@@ -13636,6 +13637,11 @@ package android.graphics.drawable {
+     method public void addState(int[], android.graphics.drawable.Drawable);
+   }
+ 
++  public class StopMotionVectorDrawable extends android.graphics.drawable.DrawableWrapper {
++    ctor public StopMotionVectorDrawable(android.graphics.drawable.Drawable);
++    method public void setCurrentFraction(float);
++  }
++
+   public class TransitionDrawable extends android.graphics.drawable.LayerDrawable implements android.graphics.drawable.Drawable.Callback {
+     ctor public TransitionDrawable(android.graphics.drawable.Drawable[]);
+     method public boolean isCrossFadeEnabled();
+@@ -21245,6 +21251,7 @@ package android.media {
+     method public void setRingerMode(int);
+     method public deprecated void setRouting(int, int, int);
+     method public void setSpeakerphoneOn(boolean);
++    method public void setStreamMaxVolume(int, int);
+     method public deprecated void setStreamMute(int, boolean);
+     method public deprecated void setStreamSolo(int, boolean);
+     method public void setStreamVolume(int, int, int);
+@@ -23251,6 +23258,7 @@ package android.media {
+     method public boolean isPlaying();
+     method public void play();
+     method public void setAudioAttributes(android.media.AudioAttributes) throws java.lang.IllegalArgumentException;
++    method public void setCustomAudioAttributes();
+     method public deprecated void setStreamType(int);
+     method public void stop();
+   }
+@@ -23566,12 +23574,15 @@ package android.media.audiofx {
+ 
+   public class BassBoost extends android.media.audiofx.AudioEffect {
+     ctor public BassBoost(int, int) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.RuntimeException, java.lang.UnsupportedOperationException;
++    method public short getCenterFrequency();
+     method public android.media.audiofx.BassBoost.Settings getProperties() throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public short getRoundedStrength() throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public boolean getStrengthSupported();
++    method public void setCenterFrequency(short) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public void setParameterListener(android.media.audiofx.BassBoost.OnParameterChangeListener);
+     method public void setProperties(android.media.audiofx.BassBoost.Settings) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public void setStrength(short) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
++    field public static final int PARAM_CENTER_FREQUENCY = 2; // 0x2
+     field public static final int PARAM_STRENGTH = 1; // 0x1
+     field public static final int PARAM_STRENGTH_SUPPORTED = 0; // 0x0
+   }
+@@ -30799,6 +30810,7 @@ package android.os {
+     field public static final java.lang.String BRAND;
+     field public static final deprecated java.lang.String CPU_ABI;
+     field public static final deprecated java.lang.String CPU_ABI2;
++    field public static final java.lang.String DATE;
+     field public static final java.lang.String DEVICE;
+     field public static final java.lang.String DISPLAY;
+     field public static final java.lang.String FINGERPRINT;
+@@ -31611,6 +31623,7 @@ package android.os {
+   }
+ 
+   public final class PowerManager {
++    method public java.lang.String getSeenWakeLocks();
+     method public boolean isDeviceIdleMode();
+     method public boolean isIgnoringBatteryOptimizations(java.lang.String);
+     method public boolean isInteractive();
+@@ -35241,6 +35254,7 @@ package android.provider {
+     field public static final java.lang.String RADIO_NFC = "nfc";
+     field public static final java.lang.String RADIO_WIFI = "wifi";
+     field public static final deprecated java.lang.String SHOW_PROCESSES = "show_processes";
++    field public static final java.lang.String SINGLE_HAND_MODE = "single_hand_mode";
+     field public static final java.lang.String STAY_ON_WHILE_PLUGGED_IN = "stay_on_while_plugged_in";
+     field public static final java.lang.String THEATER_MODE_ON = "theater_mode_on";
+     field public static final java.lang.String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
+@@ -35303,6 +35317,7 @@ package android.provider {
+     field public static final deprecated java.lang.String DEVICE_PROVISIONED = "device_provisioned";
+     field public static final java.lang.String ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+     field public static final java.lang.String ENABLED_INPUT_METHODS = "enabled_input_methods";
++    field public static final java.lang.String FLING_PULSE_LAVALAMP_COLOR_TO = "fling_lavalamp_color_to";
+     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
+     field public static final java.lang.String INPUT_METHOD_SELECTOR_VISIBILITY = "input_method_selector_visibility";
+     field public static final java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
+@@ -35323,6 +35338,7 @@ package android.provider {
+     field public static final java.lang.String SELECTED_INPUT_METHOD_SUBTYPE = "selected_input_method_subtype";
+     field public static final java.lang.String SETTINGS_CLASSNAME = "settings_classname";
+     field public static final java.lang.String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
++    field public static final java.lang.String SMARTBAR_CUSTOM_ICON_SIZE = "smartbar_custom_icon_size";
+     field public static final java.lang.String TOUCH_EXPLORATION_ENABLED = "touch_exploration_enabled";
+     field public static final deprecated java.lang.String TTS_DEFAULT_COUNTRY = "tts_default_country";
+     field public static final deprecated java.lang.String TTS_DEFAULT_LANG = "tts_default_lang";
+@@ -35384,12 +35400,18 @@ package android.provider {
+     field public static final java.lang.String ALARM_ALERT = "alarm_alert";
+     field public static final deprecated java.lang.String ALWAYS_FINISH_ACTIVITIES = "always_finish_activities";
+     field public static final deprecated java.lang.String ANDROID_ID = "android_id";
++    field public static final java.lang.String ANIMATION_CONTROLS_DURATION = "animation_controls_duration";
+     field public static final deprecated java.lang.String ANIMATOR_DURATION_SCALE = "animator_duration_scale";
+     field public static final deprecated java.lang.String AUTO_TIME = "auto_time";
+     field public static final deprecated java.lang.String AUTO_TIME_ZONE = "auto_time_zone";
+     field public static final java.lang.String BLUETOOTH_DISCOVERABILITY = "bluetooth_discoverability";
+     field public static final java.lang.String BLUETOOTH_DISCOVERABILITY_TIMEOUT = "bluetooth_discoverability_timeout";
+     field public static final deprecated java.lang.String BLUETOOTH_ON = "bluetooth_on";
++    field public static final java.lang.String BLUR_DARK_COLOR_PREFERENCE_KEY = "blur_dark_color_pref";
++    field public static final java.lang.String BLUR_LIGHT_COLOR_PREFERENCE_KEY = "blur_light_color_pref";
++    field public static final java.lang.String BLUR_MIXED_COLOR_PREFERENCE_KEY = "blur_mixed_color_pref";
++    field public static final java.lang.String BLUR_RADIUS_PREFERENCE_KEY = "blurred_expanded_panel_radius_pref";
++    field public static final java.lang.String BLUR_SCALE_PREFERENCE_KEY = "blurred_expanded_panel_scale_pref";
+     field public static final android.net.Uri CONTENT_URI;
+     field public static final deprecated java.lang.String DATA_ROAMING = "data_roaming";
+     field public static final java.lang.String DATE_FORMAT = "date_format";
+@@ -35406,6 +35428,7 @@ package android.provider {
+     field public static final java.lang.String HAPTIC_FEEDBACK_ENABLED = "haptic_feedback_enabled";
+     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
+     field public static final deprecated java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
++    field public static final deprecated java.lang.String KEY_SMS_BREATH = "sms_breath";
+     field public static final deprecated java.lang.String LOCATION_PROVIDERS_ALLOWED = "location_providers_allowed";
+     field public static final deprecated java.lang.String LOCK_PATTERN_ENABLED = "lock_pattern_autolock";
+     field public static final deprecated java.lang.String LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
+@@ -35424,6 +35447,9 @@ package android.provider {
+     field public static final deprecated java.lang.String RADIO_CELL = "cell";
+     field public static final deprecated java.lang.String RADIO_NFC = "nfc";
+     field public static final deprecated java.lang.String RADIO_WIFI = "wifi";
++    field public static final java.lang.String RECENT_APPS_ENABLED_PREFERENCE_KEY = "blurred_recent_app_enabled_pref";
++    field public static final java.lang.String RECENT_APPS_RADIUS_PREFERENCE_KEY = "blurred_recent_app_radius_pref";
++    field public static final java.lang.String RECENT_APPS_SCALE_PREFERENCE_KEY = "blurred_recent_app_scale_pref";
+     field public static final java.lang.String RINGTONE = "ringtone";
+     field public static final java.lang.String SCREEN_BRIGHTNESS = "screen_brightness";
+     field public static final java.lang.String SCREEN_BRIGHTNESS_MODE = "screen_brightness_mode";
+@@ -35443,6 +35469,10 @@ package android.provider {
+     field public static final java.lang.String TEXT_SHOW_PASSWORD = "show_password";
+     field public static final java.lang.String TIME_12_24 = "time_12_24";
+     field public static final deprecated java.lang.String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
++    field public static final java.lang.String TRANSLUCENT_NOTIFICATIONS_PRECENTAGE_PREFERENCE_KEY = "translucent_notifications_percentage_pref";
++    field public static final java.lang.String TRANSLUCENT_NOTIFICATIONS_PREFERENCE_KEY = "translucent_notifications_pref";
++    field public static final java.lang.String TRANSLUCENT_QUICK_SETTINGS_PRECENTAGE_PREFERENCE_KEY = "translucent_quick_settings_percentage_pref";
++    field public static final java.lang.String TRANSLUCENT_QUICK_SETTINGS_PREFERENCE_KEY = "translucent_quick_settings_pref";
+     field public static final deprecated java.lang.String USB_MASS_STORAGE_ENABLED = "usb_mass_storage_enabled";
+     field public static final java.lang.String USER_ROTATION = "user_rotation";
+     field public static final deprecated java.lang.String USE_GOOGLE_MAIL = "use_google_mail";
+@@ -46280,6 +46310,7 @@ package android.view {
+     method public static deprecated int getWindowTouchSlop();
+     method public static long getZoomControlsTimeout();
+     method public boolean hasPermanentMenuKey();
++    method public static boolean isNumeric(java.lang.String);
+   }
+ 
+   public class ViewDebug {
+@@ -50436,6 +50467,7 @@ package android.widget {
+     ctor public ImageSwitcher(android.content.Context);
+     ctor public ImageSwitcher(android.content.Context, android.util.AttributeSet);
+     method public void setImageDrawable(android.graphics.drawable.Drawable);
++    method public void setImageDrawableTint(android.graphics.drawable.Drawable, int, boolean);
+     method public void setImageResource(int);
+     method public void setImageURI(android.net.Uri);
+   }
+@@ -51588,6 +51620,7 @@ package android.widget {
+     ctor public TextSwitcher(android.content.Context, android.util.AttributeSet);
+     method public void setCurrentText(java.lang.CharSequence);
+     method public void setText(java.lang.CharSequence);
++    method public void setTextColor(int);
+   }
+ 
+   public class TextView extends android.view.View implements android.view.ViewTreeObserver.OnPreDrawListener {
+diff --git a/api/test-current.txt b/api/test-current.txt
+index fcbd1b51..96e72c12 100644
+--- a/api/test-current.txt
++++ b/api/test-current.txt
+@@ -112,6 +112,7 @@ package android {
+     field public static final java.lang.String REQUEST_IGNORE_BATTERY_OPTIMIZATIONS = "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS";
+     field public static final java.lang.String REQUEST_INSTALL_PACKAGES = "android.permission.REQUEST_INSTALL_PACKAGES";
+     field public static final deprecated java.lang.String RESTART_PACKAGES = "android.permission.RESTART_PACKAGES";
++    field public static final java.lang.String RESTART_UI = "android.permission.RESTART_UI";
+     field public static final java.lang.String SEND_RESPOND_VIA_MESSAGE = "android.permission.SEND_RESPOND_VIA_MESSAGE";
+     field public static final java.lang.String SEND_SMS = "android.permission.SEND_SMS";
+     field public static final java.lang.String SET_ALARM = "com.android.alarm.permission.SET_ALARM";
+@@ -9683,6 +9684,7 @@ package android.content.pm {
+     method public void setAppIcon(android.graphics.Bitmap);
+     method public void setAppLabel(java.lang.CharSequence);
+     method public void setAppPackageName(java.lang.String);
++    method public void setInstallFlagsQuick();
+     method public void setInstallLocation(int);
+     method public void setOriginatingUid(int);
+     method public void setOriginatingUri(android.net.Uri);
+@@ -13204,6 +13206,11 @@ package android.graphics.drawable {
+     method public void addState(int[], android.graphics.drawable.Drawable);
+   }
+ 
++  public class StopMotionVectorDrawable extends android.graphics.drawable.DrawableWrapper {
++    ctor public StopMotionVectorDrawable(android.graphics.drawable.Drawable);
++    method public void setCurrentFraction(float);
++  }
++
+   public class TransitionDrawable extends android.graphics.drawable.LayerDrawable implements android.graphics.drawable.Drawable.Callback {
+     ctor public TransitionDrawable(android.graphics.drawable.Drawable[]);
+     method public boolean isCrossFadeEnabled();
+@@ -19795,6 +19802,7 @@ package android.media {
+     method public void setRingerMode(int);
+     method public deprecated void setRouting(int, int, int);
+     method public void setSpeakerphoneOn(boolean);
++    method public void setStreamMaxVolume(int, int);
+     method public deprecated void setStreamMute(int, boolean);
+     method public deprecated void setStreamSolo(int, boolean);
+     method public void setStreamVolume(int, int, int);
+@@ -21792,6 +21800,7 @@ package android.media {
+     method public boolean isPlaying();
+     method public void play();
+     method public void setAudioAttributes(android.media.AudioAttributes) throws java.lang.IllegalArgumentException;
++    method public void setCustomAudioAttributes();
+     method public deprecated void setStreamType(int);
+     method public void stop();
+   }
+@@ -22107,12 +22116,15 @@ package android.media.audiofx {
+ 
+   public class BassBoost extends android.media.audiofx.AudioEffect {
+     ctor public BassBoost(int, int) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.RuntimeException, java.lang.UnsupportedOperationException;
++    method public short getCenterFrequency();
+     method public android.media.audiofx.BassBoost.Settings getProperties() throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public short getRoundedStrength() throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public boolean getStrengthSupported();
++    method public void setCenterFrequency(short) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public void setParameterListener(android.media.audiofx.BassBoost.OnParameterChangeListener);
+     method public void setProperties(android.media.audiofx.BassBoost.Settings) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
+     method public void setStrength(short) throws java.lang.IllegalArgumentException, java.lang.IllegalStateException, java.lang.UnsupportedOperationException;
++    field public static final int PARAM_CENTER_FREQUENCY = 2; // 0x2
+     field public static final int PARAM_STRENGTH = 1; // 0x1
+     field public static final int PARAM_STRENGTH_SUPPORTED = 0; // 0x0
+   }
+@@ -28382,6 +28394,7 @@ package android.os {
+     field public static final java.lang.String BRAND;
+     field public static final deprecated java.lang.String CPU_ABI;
+     field public static final deprecated java.lang.String CPU_ABI2;
++    field public static final java.lang.String DATE;
+     field public static final java.lang.String DEVICE;
+     field public static final java.lang.String DISPLAY;
+     field public static final java.lang.String FINGERPRINT;
+@@ -29193,6 +29206,7 @@ package android.os {
+   }
+ 
+   public final class PowerManager {
++    method public java.lang.String getSeenWakeLocks();
+     method public boolean isDeviceIdleMode();
+     method public boolean isIgnoringBatteryOptimizations(java.lang.String);
+     method public boolean isInteractive();
+@@ -32562,6 +32576,7 @@ package android.provider {
+     field public static final java.lang.String RADIO_NFC = "nfc";
+     field public static final java.lang.String RADIO_WIFI = "wifi";
+     field public static final deprecated java.lang.String SHOW_PROCESSES = "show_processes";
++    field public static final java.lang.String SINGLE_HAND_MODE = "single_hand_mode";
+     field public static final java.lang.String STAY_ON_WHILE_PLUGGED_IN = "stay_on_while_plugged_in";
+     field public static final java.lang.String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
+     field public static final java.lang.String USB_MASS_STORAGE_ENABLED = "usb_mass_storage_enabled";
+@@ -32623,6 +32638,7 @@ package android.provider {
+     field public static final java.lang.String ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+     field public static final java.lang.String ENABLED_INPUT_METHODS = "enabled_input_methods";
+     field public static final java.lang.String ENABLED_NOTIFICATION_POLICY_ACCESS_PACKAGES = "enabled_notification_policy_access_packages";
++    field public static final java.lang.String FLING_PULSE_LAVALAMP_COLOR_TO = "fling_lavalamp_color_to";
+     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
+     field public static final java.lang.String INPUT_METHOD_SELECTOR_VISIBILITY = "input_method_selector_visibility";
+     field public static final java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
+@@ -32643,6 +32659,7 @@ package android.provider {
+     field public static final java.lang.String SELECTED_INPUT_METHOD_SUBTYPE = "selected_input_method_subtype";
+     field public static final java.lang.String SETTINGS_CLASSNAME = "settings_classname";
+     field public static final java.lang.String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
++    field public static final java.lang.String SMARTBAR_CUSTOM_ICON_SIZE = "smartbar_custom_icon_size";
+     field public static final java.lang.String TOUCH_EXPLORATION_ENABLED = "touch_exploration_enabled";
+     field public static final deprecated java.lang.String TTS_DEFAULT_COUNTRY = "tts_default_country";
+     field public static final deprecated java.lang.String TTS_DEFAULT_LANG = "tts_default_lang";
+@@ -32705,12 +32722,18 @@ package android.provider {
+     field public static final java.lang.String ALARM_ALERT = "alarm_alert";
+     field public static final deprecated java.lang.String ALWAYS_FINISH_ACTIVITIES = "always_finish_activities";
+     field public static final deprecated java.lang.String ANDROID_ID = "android_id";
++    field public static final java.lang.String ANIMATION_CONTROLS_DURATION = "animation_controls_duration";
+     field public static final deprecated java.lang.String ANIMATOR_DURATION_SCALE = "animator_duration_scale";
+     field public static final deprecated java.lang.String AUTO_TIME = "auto_time";
+     field public static final deprecated java.lang.String AUTO_TIME_ZONE = "auto_time_zone";
+     field public static final java.lang.String BLUETOOTH_DISCOVERABILITY = "bluetooth_discoverability";
+     field public static final java.lang.String BLUETOOTH_DISCOVERABILITY_TIMEOUT = "bluetooth_discoverability_timeout";
+     field public static final deprecated java.lang.String BLUETOOTH_ON = "bluetooth_on";
++    field public static final java.lang.String BLUR_DARK_COLOR_PREFERENCE_KEY = "blur_dark_color_pref";
++    field public static final java.lang.String BLUR_LIGHT_COLOR_PREFERENCE_KEY = "blur_light_color_pref";
++    field public static final java.lang.String BLUR_MIXED_COLOR_PREFERENCE_KEY = "blur_mixed_color_pref";
++    field public static final java.lang.String BLUR_RADIUS_PREFERENCE_KEY = "blurred_expanded_panel_radius_pref";
++    field public static final java.lang.String BLUR_SCALE_PREFERENCE_KEY = "blurred_expanded_panel_scale_pref";
+     field public static final android.net.Uri CONTENT_URI;
+     field public static final deprecated java.lang.String DATA_ROAMING = "data_roaming";
+     field public static final java.lang.String DATE_FORMAT = "date_format";
+@@ -32727,6 +32750,7 @@ package android.provider {
+     field public static final java.lang.String HAPTIC_FEEDBACK_ENABLED = "haptic_feedback_enabled";
+     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
+     field public static final deprecated java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
++    field public static final deprecated java.lang.String KEY_SMS_BREATH = "sms_breath";
+     field public static final deprecated java.lang.String LOCATION_PROVIDERS_ALLOWED = "location_providers_allowed";
+     field public static final deprecated java.lang.String LOCK_PATTERN_ENABLED = "lock_pattern_autolock";
+     field public static final deprecated java.lang.String LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
+@@ -32745,6 +32769,9 @@ package android.provider {
+     field public static final deprecated java.lang.String RADIO_CELL = "cell";
+     field public static final deprecated java.lang.String RADIO_NFC = "nfc";
+     field public static final deprecated java.lang.String RADIO_WIFI = "wifi";
++    field public static final java.lang.String RECENT_APPS_ENABLED_PREFERENCE_KEY = "blurred_recent_app_enabled_pref";
++    field public static final java.lang.String RECENT_APPS_RADIUS_PREFERENCE_KEY = "blurred_recent_app_radius_pref";
++    field public static final java.lang.String RECENT_APPS_SCALE_PREFERENCE_KEY = "blurred_recent_app_scale_pref";
+     field public static final java.lang.String RINGTONE = "ringtone";
+     field public static final java.lang.String SCREEN_BRIGHTNESS = "screen_brightness";
+     field public static final java.lang.String SCREEN_BRIGHTNESS_MODE = "screen_brightness_mode";
+@@ -32764,6 +32791,10 @@ package android.provider {
+     field public static final java.lang.String TEXT_SHOW_PASSWORD = "show_password";
+     field public static final java.lang.String TIME_12_24 = "time_12_24";
+     field public static final deprecated java.lang.String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
++    field public static final java.lang.String TRANSLUCENT_NOTIFICATIONS_PRECENTAGE_PREFERENCE_KEY = "translucent_notifications_percentage_pref";
++    field public static final java.lang.String TRANSLUCENT_NOTIFICATIONS_PREFERENCE_KEY = "translucent_notifications_pref";
++    field public static final java.lang.String TRANSLUCENT_QUICK_SETTINGS_PRECENTAGE_PREFERENCE_KEY = "translucent_quick_settings_percentage_pref";
++    field public static final java.lang.String TRANSLUCENT_QUICK_SETTINGS_PREFERENCE_KEY = "translucent_quick_settings_pref";
+     field public static final deprecated java.lang.String USB_MASS_STORAGE_ENABLED = "usb_mass_storage_enabled";
+     field public static final java.lang.String USER_ROTATION = "user_rotation";
+     field public static final deprecated java.lang.String USE_GOOGLE_MAIL = "use_google_mail";
+@@ -43187,6 +43218,7 @@ package android.view {
+     method public static deprecated int getWindowTouchSlop();
+     method public static long getZoomControlsTimeout();
+     method public boolean hasPermanentMenuKey();
++    method public static boolean isNumeric(java.lang.String);
+   }
+ 
+   public class ViewDebug {
+@@ -46989,6 +47021,7 @@ package android.widget {
+     ctor public ImageSwitcher(android.content.Context);
+     ctor public ImageSwitcher(android.content.Context, android.util.AttributeSet);
+     method public void setImageDrawable(android.graphics.drawable.Drawable);
++    method public void setImageDrawableTint(android.graphics.drawable.Drawable, int, boolean);
+     method public void setImageResource(int);
+     method public void setImageURI(android.net.Uri);
+   }
+@@ -48141,6 +48174,7 @@ package android.widget {
+     ctor public TextSwitcher(android.content.Context, android.util.AttributeSet);
+     method public void setCurrentText(java.lang.CharSequence);
+     method public void setText(java.lang.CharSequence);
++    method public void setTextColor(int);
+   }
+ 
+   public class TextView extends android.view.View implements android.view.ViewTreeObserver.OnPreDrawListener {
+diff --git a/core/jni/android_media_AudioSystem.cpp b/core/jni/android_media_AudioSystem.cpp
+index b37a1b15..7ac31635 100644
+--- a/core/jni/android_media_AudioSystem.cpp
++++ b/core/jni/android_media_AudioSystem.cpp
+@@ -1749,7 +1749,136 @@ android_media_AudioSystem_systemReady(JNIEnv *env, jobject thiz)
+     return nativeToJavaStatus(AudioSystem::systemReady());
+ }
+ 
++// zormax add
++static int
++android_media_AudioSystem_GetAudioData(JNIEnv *env, jobject thiz,jint par ,jint len,jbyteArray javaEmParamter)
++{
++    int index = 0;
++    char buffer[len] ;
++    // get the pointer for the audio data from the java array
++    jbyte* AudioCustomVolumeParameter = NULL;
++    memset(buffer, 0, len);
++    if (javaEmParamter) {
++        AudioCustomVolumeParameter = (jbyte *)env->GetByteArrayElements(javaEmParamter, NULL);
++        if (AudioCustomVolumeParameter == NULL) {
++            ALOGE("Error retrieving source of EM paramters");
++            return -2; // out of memory or no data to load
++        }
++    } else {
++        ALOGE("NULL java array of audio data to play, can't play");
++        return -2;
++    }
++    if(AudioSystem::GetAudioData(par,len,(void *)buffer) != NO_ERROR ){
++        index =-1;
++    }
++    env->SetByteArrayRegion(javaEmParamter, 0, len, (const signed char*) buffer);
++    env->ReleaseByteArrayElements(javaEmParamter, AudioCustomVolumeParameter, JNI_ABORT);
++    return index;
++}
++
++static int
++android_media_AudioSystem_SetEMParameter(JNIEnv *env, jobject thiz, jbyteArray javaEmParamter, jint len)
++{
++    int index = 0;
++    // get the pointer for the audio data from the java array
++    jbyte* EMParameter = NULL;
++    if (javaEmParamter) {
++        EMParameter = (jbyte *)env->GetByteArrayElements(javaEmParamter, NULL);
++        if (EMParameter == NULL) {
++            ALOGE("Error retrieving source of EM paramters");
++            return -2; // out of memory or no data to load
++        }
++    } else {
++        ALOGE("NULL java array of audio data to play, can't play");
++        return -2;
++    }
++    if(AudioSystem::SetEMParameter ((void *)EMParameter, len) != NO_ERROR ){
++        index =-1;
++    }
++
++    env->ReleaseByteArrayElements(javaEmParamter, EMParameter, JNI_ABORT);
++
++    return index;
++}
++
++static int
++android_media_AudioSystem_SetAudioData(JNIEnv *env, jobject thiz, jint par,jint len, jbyteArray javaEmParamter)
++{
++    int index = 0;
++    // get the pointer for the audio data from the java array
++    jbyte* AudioCustomVolumeParameter = NULL;
++    if (javaEmParamter) {
++        AudioCustomVolumeParameter = (jbyte *)env->GetByteArrayElements(javaEmParamter, NULL);
++        if (AudioCustomVolumeParameter == NULL) {
++            ALOGE("Error retrieving source of  AudioCustomVolumeParameter");
++            return -2; // out of memory or no data to load
++        }
++    } else {
++        ALOGE("NULL java array of audio data to play, can't play");
++        return -2;
++    }
++    if(AudioSystem::SetAudioData (par,len,(void *)AudioCustomVolumeParameter) != NO_ERROR ){
++        index =-1;
++    }
++    env->ReleaseByteArrayElements(javaEmParamter, AudioCustomVolumeParameter, JNI_ABORT);
++    return index;
++}
++
++
++static int
++android_media_AudioSystem_SetAudioCommandX(JNIEnv *env, jobject thiz, jint para1, jint para2)
++{
++    int ret = 0;
++    if(PERMISSION_DENIED == (ret = AudioSystem::SetAudioCommand(para1, para2)))
++        {
++            return -1;
++        }
++        else
++            {
++                return ret;
++            }
++
++}
++
++static int
++android_media_AudioSystem_GetAudioCommandX(JNIEnv *env, jobject thiz, jint para1)
++{
++    int ret = -1;
++    if(NO_ERROR != AudioSystem::GetAudioCommand(para1, &ret))
++    {
++        return -1;
++    }
++    return ret;
++}
++
++static int
++android_media_AudioSystem_GetEMParameter(JNIEnv *env, jobject thiz, jbyteArray javaEmParamter, jint len)
++{
++    int index = 0;
++    // get the pointer for the audio data from the java array
++    jbyte* EMParameter = NULL;
++    char buffer[len] ;
++    if (javaEmParamter) {
++        EMParameter = (jbyte *)env->GetByteArrayElements(javaEmParamter, NULL);
++        if (EMParameter == NULL) {
++            ALOGE("Error retrieving source of EM paramters");
++            return -2; // out of memory or no data to load
++        }
++    } else {
++        ALOGE("NULL java array of audio data to play, can't play");
++        return -2;
++    }
++    if(AudioSystem::GetEMParameter ((void *)buffer, len) != NO_ERROR ){
++        index =-1;
++    }
++
++    env->SetByteArrayRegion(javaEmParamter, 0, len, (const signed char*) buffer);
++    env->ReleaseByteArrayElements(javaEmParamter, EMParameter, JNI_ABORT);
++
++    return index;
++}
+ 
++// zormax add end
+ // ----------------------------------------------------------------------------
+ 
+ static const JNINativeMethod gMethods[] = {
+@@ -1781,6 +1910,13 @@ static const JNINativeMethod gMethods[] = {
+     {"getOutputLatency",    "(I)I",     (void *)android_media_AudioSystem_getOutputLatency},
+     {"setLowRamDevice",     "(Z)I",     (void *)android_media_AudioSystem_setLowRamDevice},
+     {"checkAudioFlinger",    "()I",     (void *)android_media_AudioSystem_checkAudioFlinger},
++    // add zormax, for em mode setting
++    {"setEmParameter",   "([BI)I",     (void *)android_media_AudioSystem_SetEMParameter},
++    {"getEmParameter",   "([BI)I",     (void *)android_media_AudioSystem_GetEMParameter},
++    {"setAudioCommand",   "(II)I",     (void *)android_media_AudioSystem_SetAudioCommandX},
++    {"getAudioCommand",   "(I)I",     (void *)android_media_AudioSystem_GetAudioCommandX},
++    {"setAudioData",            "(II[B)I",     (void *)android_media_AudioSystem_SetAudioData},
++    {"getAudioData",            "(II[B)I",     (void *)android_media_AudioSystem_GetAudioData},
+     {"listAudioPorts",      "(Ljava/util/ArrayList;[I)I",
+                                                 (void *)android_media_AudioSystem_listAudioPorts},
+     {"createAudioPatch",    "([Landroid/media/AudioPatch;[Landroid/media/AudioPortConfig;[Landroid/media/AudioPortConfig;)I",
+diff --git a/core/jni/fd_utils-inl.h b/core/jni/fd_utils-inl.h
+index d2eea08f..8e1100a2 100644
+--- a/core/jni/fd_utils-inl.h
++++ b/core/jni/fd_utils-inl.h
+@@ -58,6 +58,7 @@ static const char* kPathWhitelist[] = {
+   "/dev/urandom",
+   "/dev/ion",
+   "/dev/dri/renderD129", // Fixes b/31172436
++  "/proc/ged", // MTK add
+ #ifdef PATH_WHITELIST_EXTRA_H
+ PATH_WHITELIST_EXTRA_H
+ #endif
+@@ -315,7 +316,7 @@ class FileDescriptorInfo {
+       return true;
+     }
+ 
+-    return false;
++    return true;
+   }
+ 
+   // TODO: Call android::base::Readlink instead of copying the code here.
+diff --git a/media/java/android/media/AudioSystem.java b/media/java/android/media/AudioSystem.java
+index e08c2904..cb8f502a 100644
+--- a/media/java/android/media/AudioSystem.java
++++ b/media/java/android/media/AudioSystem.java
+@@ -823,5 +823,61 @@ public class AudioSystem
+      * Keep in sync with core/jni/android_media_DeviceCallback.h.
+      */
+     final static int NATIVE_EVENT_ROUTING_CHANGE = 1000;
++
++    /// zormax: Add for support EM
++    /**
++     * Set EM parameter.
++     *
++     * @param ptr The data to be set.
++     * @param length The data size.
++     * @return The status.
++     */
++    public static native int setEmParameter(byte[] ptr, int length);
++
++    /**
++     * Get EM parameter.
++     *
++     * @param ptr The data to be get.
++     * @param length The data size.
++     * @return The status.
++     */
++    public static native int getEmParameter(byte[] ptr, int length);
++
++    /**
++     * Set audio command.
++     *
++     * @param arg1 The first argument.
++     * @param arg2 The second argument.
++     * @return The status.
++     */
++    public static native int setAudioCommand(int arg1, int arg2);
++
++    /**
++     * Get audio command.
++     *
++     * @param arg1 The first argument.
++     * @return The status.
++     */
++    public static native int getAudioCommand(int arg1);
++
++    /**
++     * Set audio data.
++     *
++     * @param par1 The par1.
++     * @param len The length.
++     * @param ptr The array of audio data.
++     * @return The status.
++     */
++    public static native int setAudioData(int par1, int len, byte[] ptr);
++
++    /**
++     * Get audio data.
++     *
++     * @param par1 The par1.
++     * @param len The length of data..
++     * @param ptr The array to receive audio data.
++     * @return The status.
++     */
++    public static native int getAudioData(int par1, int len, byte[] ptr);
+ }
+ 
