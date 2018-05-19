@@ -1,8 +1,12 @@
-#!/bin/bash
-cd ../../../..
-cd frameworks/av
-git apply -v ../../device/Infinix/X556/patches_mtk/EngineerMode#1.patch
-cd ../..
-cd frameworks/base
-git apply -v ../../device/Infinix/X556/patches_mtk/EngineerMode#2.patch
-cd ../..
+echo $1
+rootdirectory="$PWD"
+dirs="EngineerMode-1 EngineerMode-2"
+for dir in $dirs ; do
+	cd $rootdirectory
+	cd $dir
+	echo "Applying $dir patches..."
+	git apply $rootdirectory/device/coolpad/note3/patches/$dir/*.patch
+	echo " "
+done
+echo "Changing to build directory..."
+cd $rootdirectory
